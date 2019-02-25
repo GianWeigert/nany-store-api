@@ -80,7 +80,7 @@ class Category
         return $this;
     }
 
-    public function getEnabled(): ?bool
+    public function isEnabled(): ?bool
     {
         return $this->enabled;
     }

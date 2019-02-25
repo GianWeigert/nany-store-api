@@ -28,6 +28,28 @@ class CategoryController extends AbstractController
     }
 
     /**
+     * @Route("/{id}", name="get_category", methods={"GET"})
+     */
+    public function getCategory(Request $request, int $id): Response
+    {
+        $categoryRepository = $this->getDoctrine()->getRepository(Category::class);
+        $category = $categoryRepository->find($id);
+
+        $data = [
+            'name' => $category->getName(),
+            'slug' => $category->getSlug(),
+            'enabeld' => $category->isEnabled(),
+            'createdAt' => $category->getCreatedAt(),
+            'updatedAt' => $category->getUpdatedAt()
+        ];
+
+        return $this->json(
+            ['data' => $data],
+            Response::HTTP_OK
+        );
+    }
+
+    /**
      * @Route(name="create_category", methods={"POST"})
      */
     public function createCategory(Request $request): Response
