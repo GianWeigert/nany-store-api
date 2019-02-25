@@ -34,7 +34,7 @@ class CategoryController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getEntityManager();
         $requestContent = $request->getContent();
-        $requestData = json_decode($requestContent, true); 
+        $requestData = json_decode($requestContent, true);
         
         $name = $requestData['name'];
         $slug = $requestData['slug'];
@@ -52,5 +52,30 @@ class CategoryController extends AbstractController
             ['data' => $category->getId()],
             Response::HTTP_OK
         );
+    }
+
+    /**
+     * @Route("/{id}", name="edit_category", methods={"PUT"})
+     */
+    public function editCategory(Request $request, int $id): Response
+    {
+        $entityManager = $this->getDoctrine()->getEntityManager();
+        $categoryRepository = $this->getDoctrine()->getRepository(Category::class);
+        $requestContent = $request->getContent();
+        $requestData = json_decode($requestContent, true);
+
+        $name = $requestData['name'];
+        $slug = $requestData['slug'];
+        $enabled = $requestData['enabled'];
+
+        $category = $categoryRepository->find($id);
+        $category->setName($name);
+        $category->setSlug($slug);
+        $category->setEnabled($enabled);
+
+        $entityManager->persist($category);
+        $entityManager->flush();
+
+        return $this->json([], Response::HTTP_NO_CONTENT);
     }
 }
