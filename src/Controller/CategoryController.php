@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use Symfony\Component\Validator\Validation;
+use App\Validation\CreateCategoryValidation;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -57,6 +59,19 @@ class CategoryController extends AbstractController
         $entityManager = $this->getDoctrine()->getEntityManager();
         $requestContent = $request->getContent();
         $requestData = json_decode($requestContent, true);
+
+        $validator = Validation::createValidator();
+        $validation = new CreateCategoryValidation($validator);
+
+        if (!$validation->isValid($requestData)) {
+            $data['data']['error'] = $validation->getMessages();
+
+
+            return $this->json(
+                $data,
+                Response::HTTP_BAD_REQUEST
+            );
+        }
         
         $name = $requestData['name'];
         $slug = $requestData['slug'];
