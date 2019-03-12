@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Input\CategoryInput;
 use Symfony\Component\Validator\Validation;
 use App\Validation\CreateCategoryValidation;
 use Symfony\Component\HttpFoundation\Request;
@@ -72,15 +73,13 @@ class CategoryController extends AbstractController
                 Response::HTTP_BAD_REQUEST
             );
         }
-        
-        $name = $requestData['name'];
-        $slug = $requestData['slug'];
-        $enabled = $requestData['enabled'];
+
+        $categoryInput = new CategoryInput($requestData);
 
         $category = new Category();
-        $category->setName($name);
-        $category->setSlug($slug);
-        $category->setEnabled($enabled);
+        $category->setName($categoryInput->getName());
+        $category->setSlug($categoryInput->getSlug());
+        $category->setEnabled($categoryInput->getEnabled());
 
         $entityManager->persist($category);
         $entityManager->flush();
