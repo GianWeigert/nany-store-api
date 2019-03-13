@@ -23,6 +23,13 @@ class CategoryService
         return $categories;
     }
 
+    public function getCategoryById(int $id): Category
+    {
+        $category = $this->categoryRepository->find($id);
+
+        return $category;
+    }
+
     public function create(CategoryInput $categoryInput): Category
     {
         $category = $this->getCategory();

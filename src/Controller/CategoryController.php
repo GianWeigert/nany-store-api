@@ -42,10 +42,9 @@ class CategoryController extends AbstractController
      */
     public function getCategory(Request $request, int $id): Response
     {
-        $categoryRepository = $this->getDoctrine()->getRepository(Category::class);
-        $category = $categoryRepository->find($id);
+        $category = $this->categoryService->findCategoryById($id);
 
-        $data = [
+        $data['data'] = [
             'name' => $category->getName(),
             'slug' => $category->getSlug(),
             'enabeld' => $category->isEnabled(),
@@ -54,7 +53,7 @@ class CategoryController extends AbstractController
         ];
 
         return $this->json(
-            ['data' => $data],
+            $data,
             Response::HTTP_OK
         );
     }
