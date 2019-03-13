@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class CreateCategoryValidation extends AbstractValidation
+class EditCategoryValidation extends AbstractValidation
 {
     protected function getDefineRules()
     {

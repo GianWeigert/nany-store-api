@@ -16,14 +16,14 @@ class CategoryService
         $this->categoryRepository = $entityManager->getRepository(Category::class);
     }
 
-    public function getAllCategories(): array
+    public function getAll(): array
     {
         $categories = $this->categoryRepository->fetchCategories();
 
         return $categories;
     }
 
-    public function getCategoryById(int $id): Category
+    public function getById(int $id): Category
     {
         $category = $this->categoryRepository->find($id);
 
@@ -39,6 +39,15 @@ class CategoryService
         $this->entityManager->flush();
 
         return $category;
+    }
+
+    public function edit(CategoryInput $categoryInput, int $id): void
+    {
+        $category = $this->categoryRepository->find($id);
+        $this->buildCategory($category, $categoryInput);
+
+        $this->entityManager->persist($category);
+        $this->entityManager->flush();
     }
 
     private function getCategory(): Category

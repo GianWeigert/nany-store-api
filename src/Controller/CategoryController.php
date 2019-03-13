@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Input\CategoryInput;
 use App\Service\CategoryService;
+use App\Validation\EditCategoryValidation;
 use Symfony\Component\Validator\Validation;
 use App\Validation\CreateCategoryValidation;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +30,7 @@ class CategoryController extends AbstractController
      */
     public function listCategories(Request $request): Response
     {
-        $categories = $this->categoryService->getAllCategories();
+        $categories = $this->categoryService->getAll();
 
         return $this->json(
             ['data' => $categories],
@@ -42,7 +43,7 @@ class CategoryController extends AbstractController
      */
     public function getCategory(Request $request, int $id): Response
     {
-        $category = $this->categoryService->findCategoryById($id);
+        $category = $this->categoryService->getById($id);
 
         $data['data'] = [
             'name' => $category->getName(),
@@ -92,22 +93,23 @@ class CategoryController extends AbstractController
      */
     public function editCategory(Request $request, int $id): Response
     {
-        $entityManager = $this->getDoctrine()->getEntityManager();
-        $categoryRepository = $this->getDoctrine()->getRepository(Category::class);
         $requestContent = $request->getContent();
         $requestData = json_decode($requestContent, true);
 
-        $name = $requestData['name'];
-        $slug = $requestData['slug'];
-        $enabled = $requestData['enabled'];
+        $validator = Validation::createValidator();
+        $validation = new EditCategoryValidation($validator);
 
-        $category = $categoryRepository->find($id);
-        $category->setName($name);
-        $category->setSlug($slug);
-        $category->setEnabled($enabled);
+        if (!$validation->isValid($requestData)) {
+            $data['data']['error'] = $validation->getMessages();
 
-        $entityManager->persist($category);
-        $entityManager->flush();
+            return $this->json(
+                $data,
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        $categoryInput = new CategoryInput($requestData);
+        $this->categoryService->edit($categoryInput, $id);
 
         return $this->json([], Response::HTTP_NO_CONTENT);
     }
