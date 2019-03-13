@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Input\CategoryInput;
+use App\Service\CategoryService;
 use Symfony\Component\Validator\Validation;
 use App\Validation\CreateCategoryValidation;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +17,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  */
 class CategoryController extends AbstractController
 {
+    private $categoryService;
+
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
     /**
      * @Route(name="list_categories", methods={"GET"})
      */
@@ -57,7 +65,6 @@ class CategoryController extends AbstractController
      */
     public function createCategory(Request $request): Response
     {
-        $entityManager = $this->getDoctrine()->getEntityManager();
         $requestContent = $request->getContent();
         $requestData = json_decode($requestContent, true);
 
@@ -67,7 +74,6 @@ class CategoryController extends AbstractController
         if (!$validation->isValid($requestData)) {
             $data['data']['error'] = $validation->getMessages();
 
-
             return $this->json(
                 $data,
                 Response::HTTP_BAD_REQUEST
@@ -75,18 +81,11 @@ class CategoryController extends AbstractController
         }
 
         $categoryInput = new CategoryInput($requestData);
-
-        $category = new Category();
-        $category->setName($categoryInput->getName());
-        $category->setSlug($categoryInput->getSlug());
-        $category->setEnabled($categoryInput->getEnabled());
-
-        $entityManager->persist($category);
-        $entityManager->flush();
+        $category = $this->categoryService->create($categoryInput);
 
         return $this->json(
             ['data' => $category->getId()],
-            Response::HTTP_OK
+            Response::HTTP_CREATED
         );
     }
 
