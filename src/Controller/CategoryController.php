@@ -29,8 +29,7 @@ class CategoryController extends AbstractController
      */
     public function listCategories(Request $request): Response
     {
-        $categoryRepository = $this->getDoctrine()->getRepository(Category::class);
-        $categories = $categoryRepository->fetchCategories();
+        $categories = $this->categoryService->getAllCategories();
 
         return $this->json(
             ['data' => $categories],

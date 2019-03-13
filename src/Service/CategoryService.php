@@ -16,6 +16,13 @@ class CategoryService
         $this->categoryRepository = $entityManager->getRepository(Category::class);
     }
 
+    public function getAllCategories(): array
+    {
+        $categories = $this->categoryRepository->fetchCategories();
+
+        return $categories;
+    }
+
     public function create(CategoryInput $categoryInput): Category
     {
         $category = $this->getCategory();
