@@ -9,17 +9,80 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20190225152115 extends AbstractMigration
 {
+    private const IS_NOT_MYSQL_MESSAGE = 'Migration can only be executed safely on \'mysql\'';
+
     public function up(Schema $schema) : void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf($this->isMysql(), self::IS_NOT_MYSQL_MESSAGE);
+        $categoryTable = $schema->createTable("category");
 
-        $this->addSql('CREATE TABLE category (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, slug VARCHAR(255) NOT NULL, enabled TINYINT(1) NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, UNIQUE INDEX unique_category_name (name), UNIQUE INDEX unique_category_slug (slug), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
+        $categoryTable->addColumn(
+            'id',
+            'integer',
+            [
+                'autoincrement' => true,
+                'notnull' => true
+            ]
+        );
+
+        $categoryTable->addColumn(
+            'name',
+            'string',
+            [
+                'length' => 255,
+                'notnull' => true
+            ]
+        );
+
+        $categoryTable->addColumn(
+            'slug',
+            'string',
+            [
+                'length' => 255,
+                'notnull' => true
+            ]
+        );
+
+        $categoryTable->addColumn(
+            'enabled',
+            'boolean',
+            [
+                'notnull' => true
+            ]
+        );
+
+        $categoryTable->addColumn(
+            'created_at',
+            'datetime',
+            [
+                'notnull' => true
+            ]
+        );
+
+        $categoryTable->addColumn(
+            'updated_at',
+            'datetime',
+            [
+                'notnull' => true
+            ]
+        );
+
+        $categoryTable->setPrimaryKey(['id']);
+        $categoryTable->addUniqueIndex(['name']);
+        $categoryTable->addUniqueIndex(['slug']);
     }
 
     public function down(Schema $schema) : void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf($this->isMysql(), self::IS_NOT_MYSQL_MESSAGE);
 
-        $this->addSql('DROP TABLE category');
+        $categoryTable = $schema->dropTable("category");
+    }
+
+    private function isMysql(): bool
+    {
+        $databasePlataformName = $this->connection->getDatabasePlatform()->getName();
+
+        return $databasePlataformName !== 'mysql';
     }
 }
