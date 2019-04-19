@@ -64,3 +64,4 @@ final class CategoryService implements CategoryServiceInterface
         return $category;
     }
 }
+

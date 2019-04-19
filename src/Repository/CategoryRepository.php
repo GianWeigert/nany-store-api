@@ -36,3 +36,4 @@ final class CategoryRepository extends ServiceEntityRepository implements Catego
         $this->_em->flush();
     }
 }
+

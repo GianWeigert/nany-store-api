@@ -86,3 +86,4 @@ final class Version20190225152115 extends AbstractMigration
         return $databasePlataformName !== 'mysql';
     }
 }
+
