@@ -4,9 +4,10 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use App\Repository\CategoryRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
-class CategoryRepository extends ServiceEntityRepository
+final class CategoryRepository extends ServiceEntityRepository implements CategoryRepositoryInterface
 {
     public function __construct(RegistryInterface $registry)
     {
@@ -21,5 +22,17 @@ class CategoryRepository extends ServiceEntityRepository
             ->getQuery();
 
         return $qb->getArrayResult();
+    }
+
+    public function insertCategory(Category $category): void
+    {
+        $this->_em->persist($category);
+        $this->_em->flush();
+    }
+
+    public function updateCategory(Category $category): void
+    {
+        $this->_em->persist($category);
+        $this->_em->flush();
     }
 }

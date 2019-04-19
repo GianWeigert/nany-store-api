@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Input\CategoryInput;
-use App\Service\CategoryService;
+use App\Service\CategoryServiceInterface;
 use App\Validation\EditCategoryValidation;
 use Symfony\Component\Validator\Validation;
 use App\Validation\CreateCategoryValidation;
@@ -20,7 +20,7 @@ class CategoryController extends AbstractController
 {
     private $categoryService;
 
-    public function __construct(CategoryService $categoryService)
+    public function __construct(CategoryServiceInterface $categoryService)
     {
         $this->categoryService = $categoryService;
     }

@@ -4,16 +4,16 @@ namespace App\Service;
 
 use App\Entity\Category;
 use App\Input\CategoryInput;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\CategoryServiceInterface;
+use App\Repository\CategoryRepositoryInterface;
 
-class CategoryService
+final class CategoryService implements CategoryServiceInterface
 {
-    private $entityManager;
+    private $categoryRepository;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(CategoryRepositoryInterface $categoryRepository)
     {
-        $this->entityManager = $entityManager;
-        $this->categoryRepository = $entityManager->getRepository(Category::class);
+        $this->categoryRepository = $categoryRepository;
     }
 
     public function getAll(): array
@@ -35,19 +35,19 @@ class CategoryService
         $category = $this->getCategory();
         $this->buildCategory($category, $categoryInput);
 
-        $this->entityManager->persist($category);
-        $this->entityManager->flush();
+        $this->categoryRepository->insertCategory($category);
 
         return $category;
     }
 
-    public function edit(CategoryInput $categoryInput, int $id): void
+    public function edit(CategoryInput $categoryInput, int $id): Category
     {
         $category = $this->categoryRepository->find($id);
         $this->buildCategory($category, $categoryInput);
 
-        $this->entityManager->persist($category);
-        $this->entityManager->flush();
+        $this->categoryRepository->updateCategory($category);
+
+        return $category;
     }
 
     private function getCategory(): Category
