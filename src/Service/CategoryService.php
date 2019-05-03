@@ -4,8 +4,8 @@ namespace App\Service;
 
 use App\Entity\Category;
 use App\Input\CategoryInput;
-use App\Service\CategoryServiceInterface;
-use App\Repository\CategoryRepositoryInterface;
+use App\Service\Interfaces\CategoryServiceInterface;
+use App\Repository\Interfaces\CategoryRepositoryInterface;
 
 final class CategoryService implements CategoryServiceInterface
 {

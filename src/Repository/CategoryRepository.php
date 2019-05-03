@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use Symfony\Bridge\Doctrine\RegistryInterface;
-use App\Repository\CategoryRepositoryInterface;
+use App\Repository\Interfaces\CategoryRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 final class CategoryRepository extends ServiceEntityRepository implements CategoryRepositoryInterface

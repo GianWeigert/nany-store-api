@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Interfaces;
 
 use App\Entity\Category;
 use App\Input\CategoryInput;
