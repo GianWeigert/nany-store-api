@@ -8,6 +8,6 @@ Installation
 
 `composer installl`
 
-A 
-B 
-C 
+A  
+B  
+C  
